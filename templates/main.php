@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @var string[] $categories
- * @var array<int, array{name: string, category: string, price: string, src: string}> $products
+ * @var array<int, array{name: string, category: string, price: string, src: string}> $lots
  */
 ?>
 
@@ -12,7 +14,7 @@
     <ul class="promo__list">
         <?php foreach ($categories as $category): ?>
             <li class="promo__item promo__item--boards">
-                <a class="promo__link" href="pages/all-lots.html"><?= htmlspecialchars($category) ?></a>
+                <a class="promo__link" href="pages/all-lots.html"><?= hsc($category) ?></a>
             </li>
         <?php endforeach; ?>
     </ul>
@@ -22,21 +24,22 @@
         <h2>Открытые лоты</h2>
     </div>
     <ul class="lots__list">
-        <?php foreach ($products as $product): ?>
+        <?php foreach ($lots as $lot): ?>
             <li class="lots__item lot">
                 <div class="lot__image">
-                    <img src="<?= htmlspecialchars($product['src']) ?>" width="350" height="260" alt="">
+                    <img src="<?= hsc($lot['src']) ?>" width="350" height="260" alt="">
                 </div>
                 <div class="lot__info">
-                    <span class="lot__category"><?= htmlspecialchars($product['category']) ?></span>
-                    <h3 class="lot__title"><a class="text-link" href="pages/lot.html"><?= htmlspecialchars($product['name']) ?></a></h3>
+                    <span class="lot__category"><?= hsc($lot['category']) ?></span>
+                    <h3 class="lot__title"><a class="text-link" href="pages/lot.html"><?= hsc($lot['name']) ?></a></h3>
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount">Стартовая цена</span>
-                            <span class="lot__cost"><?= htmlspecialchars(formatSum($product['price'])) ?></span>
+                            <span class="lot__cost"><?= htmlspecialchars(formatSum($lot['price'])) ?></span>
                         </div>
-                        <div class="lot__timer timer">
-                            12:23
+                        <?php $result = get_dt_range($lot['expiration_date']); ?>
+                        <div class="lot__timer timer <?= (int)$result[0] < 1 ? 'timer--finishing' : '' ?>">
+                            <?= "$result[0]:$result[1]" ?>
                         </div>
                     </div>
                 </div>
@@ -44,4 +47,3 @@
         <?php endforeach; ?>
     </ul>
 </section>
-?>
